@@ -23,6 +23,7 @@ def get_input_im(filename):
     
     #Change directory to correct folder
     directory = os.getcwd()
+    directory = directory[:-4]
     os.chdir(directory + "\\inputs")
     
     #Load image as np array

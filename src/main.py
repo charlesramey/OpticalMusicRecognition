@@ -9,7 +9,7 @@ input_im = get_input_im(filename)
 #Separate Staves
 sd = StaffDetector(input_im)
 
-'''
+
 #Display Images
 plt.figure(dpi=500)
 plt.imshow(sd.im_original,cmap = 'gray')
@@ -32,4 +32,3 @@ for n in range(len(staves)):
     plt.imshow(staves[n],cmap = 'gray')
     #plt.axis('off')
 #plt.savefig('transcription_staves.jpg')
-'''
