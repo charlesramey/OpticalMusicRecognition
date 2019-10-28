@@ -112,7 +112,10 @@ class StaffDetector:
         # Get staff separation
         start = count_gradient_changes(im, 2)
         end = count_gradient_changes(im, 3)
-        staff_separation = end-start
+        if end is None:
+            staff_separation = start//3
+        else:
+            staff_separation = end-start
         
         # Get row indexes to cut at
         n = 1
@@ -129,7 +132,7 @@ class StaffDetector:
             indices = (dummy1-staff_separation, dummy2+staff_separation)
             cut_indices.append(indices)
             n += 2
-        
+
         # Cut up staves
         for n in range(len(cut_indices)):
             slice_o = im_original[cut_indices[n][0]:cut_indices[n][1], :]
