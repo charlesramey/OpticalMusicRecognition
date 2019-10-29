@@ -1,6 +1,6 @@
 import os
 import numpy as np
-import matplotlib.pyplot as plt
+from skimage import io
 
 
 # Returns row index of c-th detected gradient change
@@ -29,7 +29,7 @@ def get_input_im(filename):
     os.chdir(directory + "\\inputs")
     
     # Load image as np array
-    im = np.array(plt.imread(filename))
+    im = np.array(io.imread(filename))
 
     # Get rid of third dimension of it exists
     shape = np.shape(im)
