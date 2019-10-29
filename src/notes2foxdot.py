@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from StaffDetector import StaffDetector
 from myfunctions import get_input_im
-from find_notes import find_notes
 
 
 # Takes an array of notes, returns arrays of pitches and durations
@@ -18,15 +17,19 @@ def notes2foxdot(notes):
     return pitches, durations
 
 
+# Make notes using staff and fabricated centroid positions
+centroids = []
+for n in range(8):
+    r = 320 - 13*n
+    c = 250 * (n+1)
+    centroids.append((r, c))
+
 # Load image
-filename = 'test1.jpg'
+filename = 'transcription.jpg'
 input_im = get_input_im(filename)
 
 # Process image
 sd = StaffDetector(input_im)
-top_line = sd.im_staves_separated[0]
-centroids = find_notes(top_line)
-print(centroids)
 
 # Add centroids to staff
 staff = sd.im_staves_expanded_separated[0]
