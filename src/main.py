@@ -3,7 +3,7 @@ from StaffDetector import StaffDetector
 from myfunctions import get_input_im
 
 # Load image
-filename = 'transcription.jpg'
+filename = 'test1.jpg'
 input_im = get_input_im(filename)
 
 # Separate Staves
