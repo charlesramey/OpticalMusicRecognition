@@ -3,7 +3,8 @@ from StaffDetector import StaffDetector
 from myfunctions import get_input_im
 
 # Load image
-filename = 'test1.jpg'
+print("This is the right code being run")
+filename = 'test1_cropped.png'
 input_im = get_input_im(filename)
 
 # Separate Staves
