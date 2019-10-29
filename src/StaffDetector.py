@@ -146,7 +146,7 @@ class StaffDetector:
         print("Getting staff indices...")
         
         # Get images
-        staves = self.im_staves_expanded
+        staves = self.im_staves_expanded_separated
         
         for im in staves:
             indices = []
