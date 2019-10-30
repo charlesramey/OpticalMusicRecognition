@@ -40,3 +40,14 @@ def get_input_im(filename):
     os.chdir(directory)
     
     return im
+
+
+def notes2foxdot(notes):
+    pitches = []
+    durations = []
+
+    for n in notes:
+        pitches.append(n.pitch)
+        durations.append(n.duration)
+
+    return pitches, durations

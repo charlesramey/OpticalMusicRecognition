@@ -46,8 +46,6 @@ class Note:
         r = self.note_centroid[0]
         line = 0
 
-        print(r)
-
         i = 0
         # If centroid at line 0 or above
         if r < index[0][0]:

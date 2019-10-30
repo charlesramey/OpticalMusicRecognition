@@ -16,7 +16,7 @@ def notes2foxdot(notes):
     
     return pitches, durations
 
-
+'''
 # Make notes using staff and fabricated centroid positions
 centroids = []
 for n in range(8):
@@ -61,3 +61,4 @@ print(durations)
 plt.figure(dpi=200)
 plt.imshow(staff_rgb)
 plt.show()
+'''

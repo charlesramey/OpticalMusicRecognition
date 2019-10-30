@@ -36,7 +36,7 @@ class StaffDetector:
     def isolate_staves(self):
         
         print("Isolating Staves...")
-        
+
         # Do binary thresholding
         t = 156
         im = np.where(self.im_original < t, 0, 1)
@@ -116,7 +116,8 @@ class StaffDetector:
             staff_separation = start//3
         else:
             staff_separation = end-start
-        
+        staff_separation //= 3
+
         # Get row indexes to cut at
         n = 1
         cut_indices = []
@@ -134,9 +135,10 @@ class StaffDetector:
             n += 2
 
         # Cut up staves
+        c = np.shape(im_original)[1]//12
         for n in range(len(cut_indices)):
-            slice_o = im_original[cut_indices[n][0]:cut_indices[n][1], :]
-            slice_e = im_expanded[cut_indices[n][0]:cut_indices[n][1], :]
+            slice_o = im_original[cut_indices[n][0]:cut_indices[n][1], c:]
+            slice_e = im_expanded[cut_indices[n][0]:cut_indices[n][1], c:]
             self.im_staves_separated.append(slice_o)
             self.im_staves_expanded_separated.append(slice_e)
         
@@ -146,7 +148,7 @@ class StaffDetector:
         print("Getting staff indices...")
         
         # Get images
-        staves = self.im_staves_expanded
+        staves = self.im_staves_expanded_separated
         
         for im in staves:
             indices = []
