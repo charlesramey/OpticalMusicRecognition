@@ -11,13 +11,13 @@ input_im = get_input_im(filename)
 
 # Separate Staves
 sd = StaffDetector(input_im)
-staves = sd.im_staves_separated
+staves = sd.im_staves_subtracted_separated
 
 # Find notes from staves
 centroids = []
 for n in range(len(staves)):
     # Find centroids
-    dummy = find_notes(staves[n], min_r=10, max_r=15, thresh=0.85)
+    dummy = find_notes(staves[n], min_r=10, max_r=15, thresh=0.5)
     centroids.append(dummy)
 
     # Plot centroids
@@ -38,9 +38,9 @@ for n in range(len(staves)):
     plt.scatter([r[1] for r in dummy], [c[0] for c in dummy], marker='.', color='r', s=[1 for n in dummy])
 
 plt.figure(1, dpi=500)
-plt.savefig('test4_centroids_original.png')
+#plt.savefig('test4_centroids_derivatives.png')
 plt.figure(2, dpi=500)
-plt.savefig('test4_centroids_staves.png')
+#plt.savefig('test4_centroids_derivatives_staves.png')
 plt.show()
 
 # Create notes
@@ -55,14 +55,19 @@ for n in range(len(centroids)):
 pitches, durations = notes2foxdot(notes)
 print("Pitches:", pitches)
 
-'''
+pitches = pitches[2:len(pitches)-1]
+
+plt.figure(dpi=200)
+plt.imshow(sd.im_staves_expanded, cmap='Greys')
+plt.show()
+
 # Play FoxDot pitches
 Scale.default = Scale.chromatic
+Clock.set_time(-1)
+Clock.set_tempo(260)
 p1 = Player()
 p1 >> keys(pitches)
-Clock.set_time(-1)
 Go()
-'''
 
 '''
 # Display Images
@@ -71,10 +76,8 @@ plt.imshow(sd.im_original, cmap='gray')
 
 plt.figure(dpi=200)
 plt.imshow(sd.im_staves, cmap='Greys')
-
-plt.figure(dpi=200)
-plt.imshow(sd.im_staves_expanded, cmap='Greys')
-
+'''
+'''
 plt.figure(dpi=200)
 plt.imshow(sd.im_staves_filled, cmap='Greys')
 

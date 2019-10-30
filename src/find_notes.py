@@ -38,7 +38,7 @@ def find_notes(img, min_r=10, max_r=12, thresh=0.85):
     """
     gray = color.rgb2gray(img)
     gray = np.array(gray)
-    edges = canny(gray, sigma=3)
+    edges = canny(gray, sigma=0)
     radii = np.arange(min_r, max_r, 1)
     hough_raw = hough_circle(edges, radii)
     accums, cx, cy, radii = hough_circle_peaks(hough_raw, radii)
