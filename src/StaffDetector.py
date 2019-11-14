@@ -54,13 +54,30 @@ class StaffDetector:
                       [ 1, 0]])
         im = convolve(im, f)
         im = np.where(im == 0, 0, 1)
-        
+
+        # plt.figure(dpi=500)
+        # plt.imshow(im, cmap='Greys')
+        # plt.title('Vertical Derivative')
+        # plt.axis('off')
+        # plt.savefig('vertical_derivative.jpg')
+
         # Do horizontal erosion then dilation
         f = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
              [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
+
         im = binary_erosion(im, f, iterations=10)
+        # plt.figure(dpi=500)
+        # plt.imshow(im, cmap='Greys')
+        # plt.title('Horizontal Erosion')
+        # plt.axis('off')
+        # plt.savefig('horizontal_erosion.jpg')
         im = binary_dilation(im, f, iterations=500)
-        
+        # plt.figure(dpi=500)
+        # plt.imshow(im, cmap='Greys')
+        # plt.title('Horizontal Dilation')
+        # plt.axis('off')
+        # plt.savefig('horizontal_dilation.jpg')
+
         self.im_staves = im
 
     # Subtract the staff from the original image

@@ -116,7 +116,7 @@ class Note:
         
         # Accidentals override key_signature, so
         # adjust line notes based on key only if no accidentals are detected
-        if self.accidental != 0:
+        if self.accidental == 0:
             line_notes = self.key_shift(line_notes)
         
         # Get pitch based on line alone
