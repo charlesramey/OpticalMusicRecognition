@@ -11,11 +11,11 @@ class Box {
   }
 
   void display() {
-    stroke(#ff0000);
+    stroke(noteColors[label]);
     noFill();
     rect(center.x, center.y, size.x, size.y);
-    fill(#ff0000);
-    text(noteNames[label], center.x, center.y - size.y/2);
+    fill(noteColors[label]);
+    ellipse(center.x, center.y, size.x/4, size.x/4);
   }
 
   boolean pointInside(float x, float y) {

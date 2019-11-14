@@ -20,6 +20,7 @@ int boxHeight, boxWidth;
 float ratio = 0.3f;
 int note = 0;
 String[] noteNames = {"eighth", "quarter", "half", "whole"};
+int[] noteColors = {0xffff0000, 0xff00ff00, 0xff0000ff, 0xffff00ff};
 ArrayList<Box> boxes;
 float scaleFactor;
 String imgName;
@@ -59,10 +60,10 @@ public void updateBox() {
     boxHeight -= delta;
   }
   boxWidth = PApplet.parseInt(boxHeight * ratio);
-  stroke(0xffff0000);
+  stroke(noteColors[note]);
   noFill();
   rect(mouseX, mouseY, boxWidth, boxHeight);
-  fill(0xffff0000);
+  fill(noteColors[note]);
   text(noteNames[note], mouseX, mouseY-boxHeight/2);
 }
 
@@ -137,11 +138,11 @@ class Box {
   }
 
   public void display() {
-    stroke(0xffff0000);
+    stroke(noteColors[label]);
     noFill();
     rect(center.x, center.y, size.x, size.y);
-    fill(0xffff0000);
-    text(noteNames[label], center.x, center.y - size.y/2);
+    fill(noteColors[label]);
+    ellipse(center.x, center.y, size.x/4, size.x/4);
   }
 
   public boolean pointInside(float x, float y) {

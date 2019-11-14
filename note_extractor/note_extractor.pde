@@ -4,6 +4,7 @@ int boxHeight, boxWidth;
 float ratio = 0.3;
 int note = 0;
 String[] noteNames = {"eighth", "quarter", "half", "whole"};
+int[] noteColors = {#ff0000, #00ff00, #0000ff, #ff00ff};
 ArrayList<Box> boxes;
 float scaleFactor;
 String imgName;
@@ -43,10 +44,10 @@ void updateBox() {
     boxHeight -= delta;
   }
   boxWidth = int(boxHeight * ratio);
-  stroke(#ff0000);
+  stroke(noteColors[note]);
   noFill();
   rect(mouseX, mouseY, boxWidth, boxHeight);
-  fill(#ff0000);
+  fill(noteColors[note]);
   text(noteNames[note], mouseX, mouseY-boxHeight/2);
 }
 
