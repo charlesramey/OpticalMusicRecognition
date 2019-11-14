@@ -26,6 +26,31 @@ def filter_notes(notes, min_dist):
     return sorted(out, key=lambda n: n[1])
 
 
+def combine_notes(notes, min_dist):
+    def dist(a, b):
+        return sqrt((a[0]-b[0])**2 + (a[1]-b[1])**2)
+
+    def mean(note_group):
+        x = [n[0] for n in note_group]
+        y = [n[1] for n in note_group]
+        return sum(x) / len(x), sum(y) / len(y)
+
+    gr = 0
+    groups = {}
+    for i in range(len(notes)):
+        if i in groups:
+            note_group = groups[i]
+        else:
+            note_group = gr
+            groups[i] = note_group
+            gr += 1
+        for j in range(i, len(notes)):
+            if dist(notes[i], notes[j]) < min_dist:
+                groups[j] = note_group
+    clusters = [[notes[n] for n in groups if groups[n] == i] for i in range(gr)]
+    return sorted([mean(c) for c in clusters], key=lambda n: n[1])
+
+
 def find_notes(img, min_r=10, max_r=12, thresh=0.85):
     """
     Find the centroids of the notes in an image. The image must be a single line of music, and must have the clef, key,
@@ -45,7 +70,8 @@ def find_notes(img, min_r=10, max_r=12, thresh=0.85):
     f = accums > thresh * np.max(accums)
     x = cx[f]
     y = cy[f]
-    return filter_notes(list(zip(y, x)), 2*max_r)
+    return combine_notes(list(zip(y, x)), 2*max_r)
+    # return filter_notes(list(zip(y, x)), 2*max_r)
 
 
 def make_note_converter(top_line, spacing):
@@ -68,7 +94,7 @@ def plot_centroids(im, centroids):
     :param centroids: The centroids as returned by find_notes
     """
     plt.imshow(im)
-    plt.scatter([n[1] for n in centroids], [n[0] for n in centroids], marker='x', color='r')
+    plt.scatter([n[1] for n in centroids], [n[0] for n in centroids], marker='.', color='r')
     plt.show()
 
 
