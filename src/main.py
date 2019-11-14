@@ -3,7 +3,7 @@ from find_notes import find_notes
 import Note
 from StaffDetector import StaffDetector
 from myfunctions import get_input_im, notes2foxdot
-from FoxDot import *
+#from FoxDot import *
 
 # Load image
 filename = 'test4.png'
@@ -21,15 +21,15 @@ for n in range(len(staves)):
     centroids.append(dummy)
 
     # Plot centroids
-    plt.figure(1, dpi=500)
+    plt.figure(1, dpi=200)
     plt.subplot(len(staves), 1, n+1)
     if n == 0:
         plt.title("Detected Centroids on Notes")
-    plt.imshow(staves[n], cmap='gray')
+    plt.imshow(sd.im_staves_separated[n], cmap='gray')
     plt.axis('off')
-    plt.scatter([r[1] for r in dummy], [c[0] for c in dummy], marker='.', color='r', s=[3 for n in dummy])
+    plt.scatter([r[1] for r in dummy], [c[0] for c in dummy], marker='.', color='r', s=[1 for n in dummy])
 
-    plt.figure(2, dpi=500)
+    plt.figure(2, dpi=200)
     plt.subplot(len(staves), 1, n+1)
     if n == 0:
         plt.title("Detected Centroids on Expanded Staff")
@@ -37,12 +37,41 @@ for n in range(len(staves)):
     plt.axis('off')
     plt.scatter([r[1] for r in dummy], [c[0] for c in dummy], marker='.', color='r', s=[1 for n in dummy])
 
-plt.figure(1, dpi=500)
-#plt.savefig('test4_centroids_derivatives.png')
-plt.figure(2, dpi=500)
-#plt.savefig('test4_centroids_derivatives_staves.png')
+plt.figure(1)
+# plt.savefig('test4_centroids_derivatives.png')
+plt.figure(2)
+# plt.savefig('test4_centroids_derivatives_staves.png')
+# plt.figure(3)
+# plt.savefig('sliced_original.jpg')
+# plt.figure(dpi=200)
+# plt.imshow(sd.im_staves_expanded, cmap='Greys')
+# plt.title('Expanded Staves')
+# plt.axis('off')
 plt.show()
 
+# # Display Images
+# plt.figure(dpi=200)
+# plt.imshow(sd.im_original, cmap='gray')
+# plt.title("Input Image")
+# plt.axis('off')
+#
+# plt.figure(dpi=200)
+# plt.imshow(sd.im_staves, cmap='Greys')
+# plt.title('Staff ')
+#
+# plt.figure(dpi=200)
+# plt.imshow(sd.im_staves_filled, cmap='Greys')
+#
+# staves = sd.im_staves_separated
+#
+# plt.figure(dpi=200)
+# for n in range(len(staves)):
+#     plt.subplot(len(staves),1,n+1)
+#     plt.imshow(staves[n], cmap='gray')
+#
+# plt.show()
+
+'''
 # Create notes
 notes = []
 for n in range(len(centroids)):
@@ -70,6 +99,7 @@ p1 >> keys(pitches)
 Go()
 
 '''
+'''
 # Display Images
 plt.figure(dpi=200)
 plt.imshow(sd.im_original, cmap='gray')
@@ -82,14 +112,14 @@ plt.figure(dpi=200)
 plt.imshow(sd.im_staves_filled, cmap='Greys')
 
 staves = sd.im_staves_separated
-
-plt.figure(dpi=200)
-for n in range(len(staves)):
-    plt.subplot(len(staves),1,n+1)
-    plt.imshow(staves[n], cmap='gray')
-
-plt.show()
 '''
+# plt.figure(dpi=200)
+# plt.yticks([])
+# for n in range(len(staves)):
+#     plt.subplot(len(staves), 1, n+1)
+#     plt.imshow(staves[n], cmap='gray')
+#
+# plt.show()
 
 
 
