@@ -69,16 +69,17 @@ public void updateBox() {
 }
 
 public void nudgeBox() {
+  float speed = 0.25f;
   if (lastBox == null) return;
   if (keysPressed.contains(UP)) {
-    lastBox.center.y -= 1;
+    lastBox.center.y -= speed;
   } else if (keysPressed.contains(DOWN)) {
-    lastBox.center.y += 1;
+    lastBox.center.y += speed;
   }
   if (keysPressed.contains(LEFT)) {
-    lastBox.center.x -= 1;
+    lastBox.center.x -= speed;
   } else if (keysPressed.contains(RIGHT)) {
-    lastBox.center.x += 1;
+    lastBox.center.x += speed;
   }
 }
 
