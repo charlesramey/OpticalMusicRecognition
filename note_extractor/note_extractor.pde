@@ -121,6 +121,10 @@ void keyPressed() {
   case 'w':
     note = 3;
     break;
+  case 'n':
+    lastBox = new Box(lastBox.center.x + 10, lastBox.center.y + 10);
+    boxes.add(lastBox);
+    break;
   }
 }
 
