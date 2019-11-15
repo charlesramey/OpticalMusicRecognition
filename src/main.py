@@ -65,7 +65,6 @@ for note in im_notes:
     if np.shape(note) != shape:
         print("Different note image shape detected")
 
-
 # Create notes
 notes = []
 for n in range(len(centroids)):
