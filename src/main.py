@@ -14,11 +14,15 @@ input_im = get_input_im(filename)
 # Separate Staves
 sd = StaffDetector(input_im)
 staves = sd.im_staves_subtracted_separated
+print("Staff detector ran successfully!")
+print()
 
 # Find notes from staves
 centroids = []
 im_notes = []
+print("Detecting notes...")
 for n in range(len(staves)):
+    print("Iteration", n, "of", len(staves))
     # Find centroids
     dummy = find_notes(staves[n], min_r=10, max_r=15, thresh=0.5)
     centroids.append(dummy)
@@ -64,6 +68,23 @@ shape = np.shape(im_notes[0])
 for note in im_notes:
     if np.shape(note) != shape:
         print("Different note image shape detected")
+
+np.random.shuffle(im_notes)
+plt.figure(dpi=400)
+n = 0
+for note in im_notes:
+    n += 1
+    if n > 25:
+        break
+    plt.subplot(5, 5, n)
+    plt.imshow(note, cmap='gray')
+    plt.tick_params(
+        axis='x',  # changes apply to the x-axis
+        which='both',  # both major and minor ticks are affected
+        bottom=False,  # ticks along the bottom edge are off
+        top=False,  # ticks along the top edge are off
+        labelbottom=False)  # labels along the bottom edge are off
+plt.show()
 
 # Create notes
 notes = []
