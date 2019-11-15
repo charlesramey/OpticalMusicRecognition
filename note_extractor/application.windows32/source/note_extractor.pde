@@ -1,13 +1,14 @@
 PImage img, scaledImg;
 ArrayList<Integer> keysPressed;
 int boxHeight, boxWidth;
-float ratio = 0.3;
+float ratio = 0.45;
 int note = 0;
 String[] noteNames = {"eighth", "quarter", "half", "whole"};
 int[] noteColors = {#ff0000, #00ff00, #0000ff, #ff00ff};
 ArrayList<Box> boxes;
 float scaleFactor;
 String imgName;
+Box lastBox = null;
 
 void setup() {
   selectInput("Pick an image of some sheet music!", "fileSelected");
@@ -38,9 +39,9 @@ void fileSelected(File selection) {
 
 void updateBox() {
   int delta = keysPressed.contains(SHIFT) ? 10 : 1;
-  if (keysPressed.contains(UP)) {
+  if (keysPressed.contains(73)) {
     boxHeight += delta;
-  } else if (keysPressed.contains(DOWN)) {
+  } else if (keysPressed.contains(75)) {
     boxHeight -= delta;
   }
   boxWidth = int(boxHeight * ratio);
@@ -51,10 +52,25 @@ void updateBox() {
   text(noteNames[note], mouseX, mouseY-boxHeight/2);
 }
 
+void nudgeBox() {
+  if (lastBox == null) return;
+  if (keysPressed.contains(UP)) {
+    lastBox.center.y -= 1;
+  } else if (keysPressed.contains(DOWN)) {
+    lastBox.center.y += 1;
+  }
+  if (keysPressed.contains(LEFT)) {
+    lastBox.center.x -= 1;
+  } else if (keysPressed.contains(RIGHT)) {
+    lastBox.center.x += 1;
+  }
+}
+
 void draw() {
   if (img == null || scaledImg == null) return;
   image(scaledImg, 0, 0);
   updateBox();
+  nudgeBox();
   for (Box b : boxes) {
     b.display();
   }
@@ -70,8 +86,10 @@ void mousePressed() {
   for (Box b : deadBoxes) {
     boxes.remove(b);
   }
-  if (deadBoxes.size() == 0)
-    boxes.add(new Box(mouseX, mouseY));
+  if (deadBoxes.size() == 0) {
+    lastBox = new Box(mouseX, mouseY);
+    boxes.add(lastBox);
+  }
 }
 
 void saveNoteImages() {

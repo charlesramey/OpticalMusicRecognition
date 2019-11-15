@@ -17,13 +17,14 @@ public class note_extractor extends PApplet {
 PImage img, scaledImg;
 ArrayList<Integer> keysPressed;
 int boxHeight, boxWidth;
-float ratio = 0.3f;
+float ratio = 0.45f;
 int note = 0;
 String[] noteNames = {"eighth", "quarter", "half", "whole"};
 int[] noteColors = {0xffff0000, 0xff00ff00, 0xff0000ff, 0xffff00ff};
 ArrayList<Box> boxes;
 float scaleFactor;
 String imgName;
+Box lastBox = null;
 
 public void setup() {
   selectInput("Pick an image of some sheet music!", "fileSelected");
@@ -54,9 +55,9 @@ public void fileSelected(File selection) {
 
 public void updateBox() {
   int delta = keysPressed.contains(SHIFT) ? 10 : 1;
-  if (keysPressed.contains(UP)) {
+  if (keysPressed.contains(73)) {
     boxHeight += delta;
-  } else if (keysPressed.contains(DOWN)) {
+  } else if (keysPressed.contains(75)) {
     boxHeight -= delta;
   }
   boxWidth = PApplet.parseInt(boxHeight * ratio);
@@ -67,10 +68,25 @@ public void updateBox() {
   text(noteNames[note], mouseX, mouseY-boxHeight/2);
 }
 
+public void nudgeBox() {
+  if (lastBox == null) return;
+  if (keysPressed.contains(UP)) {
+    lastBox.center.y -= 1;
+  } else if (keysPressed.contains(DOWN)) {
+    lastBox.center.y += 1;
+  }
+  if (keysPressed.contains(LEFT)) {
+    lastBox.center.x -= 1;
+  } else if (keysPressed.contains(RIGHT)) {
+    lastBox.center.x += 1;
+  }
+}
+
 public void draw() {
   if (img == null || scaledImg == null) return;
   image(scaledImg, 0, 0);
   updateBox();
+  nudgeBox();
   for (Box b : boxes) {
     b.display();
   }
@@ -86,8 +102,10 @@ public void mousePressed() {
   for (Box b : deadBoxes) {
     boxes.remove(b);
   }
-  if (deadBoxes.size() == 0)
-    boxes.add(new Box(mouseX, mouseY));
+  if (deadBoxes.size() == 0) {
+    lastBox = new Box(mouseX, mouseY);
+    boxes.add(lastBox);
+  }
 }
 
 public void saveNoteImages() {
