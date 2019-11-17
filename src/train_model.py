@@ -4,22 +4,13 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import confusion_matrix
 from matplotlib import pyplot as plt
 from sklearn import svm, metrics
+from myfunctions import scale
 from PIL import Image
 import numpy as np
 import joblib
 import os
 
-def scale(image, max_size, method=Image.ANTIALIAS):
-    """
-    From: https://gist.github.com/fabeat/6621507
-    resize 'image' to 'max_size' keeping the aspect ratio
-    and place it in center of white 'max_size' image
-    """
-    image.thumbnail(max_size, method)
-    offset = (int((max_size[0] - image.size[0]) / 2), int((max_size[1] - image.size[1]) / 2))
-    back = Image.new("RGB", max_size, "white")
-    back.paste(image, offset)
-    return back
+
 
 def preprocess(training_dir, testing_dir):
     x_ = []
