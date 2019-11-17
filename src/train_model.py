@@ -1,3 +1,4 @@
+from sklearn.model_selection import train_test_split
 from sklearn.utils.multiclass import unique_labels
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import confusion_matrix
@@ -45,11 +46,24 @@ def preprocess(training_dir, testing_dir):
                 y_test.append(fig)
     return (x_, y_, x_test, y_test)
 
+def preprocess_durations(data_dir):
+    X = []
+    Y = []
+    for fig in os.listdir(data_dir):
+        for example in os.listdir(data_dir + '\\' + fig):
+            if 'png' in example:
+                example_path = data_dir + '\\' + fig + '\\' + example
+                im = Image.open(example_path).convert('LA')
+                resized = scale(im, (21,48)).convert('LA')
+                resized = np.array(resized)[:,:,0].reshape((21*48, )) / 255
+                X.append(resized)
+                Y.append(fig)
+    return (X, Y)
 
 def train_model(x_, y_, plot=False):
-    mlp = MLPClassifier(activation='relu', hidden_layer_sizes=(25),
-                    max_iter=480, alpha=1e-50,
-                    solver='adam', verbose=10, 
+    mlp = MLPClassifier(activation='relu', hidden_layer_sizes=(200),
+                    max_iter=500, alpha=1e-6,
+                    solver='adam', verbose=20, 
                     tol=1e-4, random_state=1,
                     learning_rate_init=.01,
                     learning_rate='adaptive')
@@ -70,14 +84,11 @@ def test_model(x_test, y_test, mlp, compute_metrics=True):
 
 
 def main():
-    #training_dir = input("Where is the training data stored? ")
-    #testing_dir = input("Where is the testing data stored? ")
-    #training_dir = "C:\\Users\\charles\\Desktop\\OpenOMR\\neuralnetwork\\training"
-    #testing_dir = "C:\\Users\\charles\\Desktop\\OpenOMR\\neuralnetwork\\testing"
-    training_dir = "C:\\Users\\charles\\Desktop\\training_notes_only"
-    testing_dir = "C:\\Users\\charles\\Desktop\\testing_notes_only"
+    duration_data = "C:\\Users\\charles\\Desktop\\durations_data"
     print("NOW PREPROCESSING DATA")
-    train_samples, train_labels, test_samples, test_labels = preprocess(training_dir, testing_dir)
+    X, Y = preprocess_durations(duration_data)
+    train_samples, test_samples, train_labels, test_labels = train_test_split(X, Y, test_size=0.33, random_state=42)
+    #train_samples, train_labels, test_samples, test_labels = preprocess(training_dir, testing_dir)
     print("NOW TRAINING NEURAL NETWORK")
     neuralnetwork = train_model(train_samples, train_labels, plot=True)
     nn_filename = input("Enter filename to save the neural network: ")
