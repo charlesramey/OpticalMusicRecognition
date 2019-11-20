@@ -65,7 +65,7 @@ class StaffDetector:
         f = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
              [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
 
-        im = binary_erosion(im, f, iterations=10)
+        im = binary_erosion(im, f, iterations=5)
         # plt.figure(dpi=500)
         # plt.imshow(im, cmap='Greys')
         # plt.title('Horizontal Erosion')

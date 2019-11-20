@@ -4,6 +4,7 @@ from PIL import Image
 import numpy as np
 import os
 
+
 # Returns row index of c-th detected gradient change
 def count_gradient_changes(im, c):
     count = 0

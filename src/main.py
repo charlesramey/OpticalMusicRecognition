@@ -8,14 +8,17 @@ import numpy as np
 import joblib
 import Note
 
+
 def main():
+
     # Classes to foxdot durations
-    durations = {'eighth':0.5, 'quarter':1, 'half':2, 'whole': 4}
+    duration_conv = {'eighth': 0.5, 'quarter': 1, 'half': 2, 'whole': 4}
+
     # Load note duration recognizer
     neural_net = joblib.load('duration_data.model')
 
     # Load image
-    filename = 'test4.png'
+    filename = 'test5.png'
     input_im = get_input_im(filename)
 
     # Separate Staves
@@ -34,8 +37,8 @@ def main():
         dummy = find_notes(staves[n], min_r=10, max_r=15, thresh=0.5)
         centroids.append(dummy)
 
-        # Note Extractor takes in an image of a staff, the staff height, and a list of note centroids. It returns a list of
-        # images where each image is centered on the centroids specified.
+        # Note Extractor takes in an image of a staff, the staff height, and a list of note centroids. It returns
+        # a list of images where each image is centered on the centroids specified.
         ne = NoteExtractor.NoteExtractor(staff=sd.im_staves_separated[n], centroids=dummy, staff_height=sd.staff_height)
         for note in ne.notes:
             im_notes.append(note)
@@ -52,13 +55,13 @@ def main():
         #     plt.imshow(note, cmap='gray')
 
         # Plots centroids on the actual image
-        # plt.figure(1, dpi=200)
-        # plt.subplot(len(staves), 1, n+1)
-        # if n == 0:
-        #     plt.title("Detected Centroids on Notes")
-        # plt.imshow(sd.im_staves_separated[n], cmap='gray')
-        # plt.axis('off')
-        # plt.scatter([r[1] for r in dummy], [c[0] for c in dummy], marker='.', color='r', s=[1 for n in dummy])
+        plt.figure(1, dpi=200)
+        plt.subplot(len(staves), 1, n+1)
+        if n == 0:
+            plt.title("Detected Centroids on Notes")
+        plt.imshow(sd.im_staves_separated[n], cmap='gray')
+        plt.axis('off')
+        plt.scatter([r[1] for r in dummy], [c[0] for c in dummy], marker='.', color='r', s=[1 for n in dummy])
 
         # Plots centroids on the expanded staves
         # plt.figure(2, dpi=200)
@@ -68,6 +71,7 @@ def main():
         # plt.imshow(sd.im_staves_expanded_separated[n], cmap='Greys')
         # plt.axis('off')
         # plt.scatter([r[1] for r in dummy], [c[0] for c in dummy], marker='.', color='r', s=[1 for n in dummy])
+    print()
     plt.show()
 
     # Check if all notes are the same shape
@@ -76,9 +80,10 @@ def main():
         if np.shape(note) != shape:
             print("Different note image shape detected")
 
+    # Randomly select some images and see how they are classified
     shuffled = np.copy(im_notes)
     np.random.shuffle(shuffled)
-    plt.figure(dpi=400)
+    plt.figure(figsize=(7,10),dpi=200)
     n = 0
     for note in shuffled:
         n += 1
@@ -94,8 +99,15 @@ def main():
             labelbottom=False)  # labels along the bottom edge are off
         sample = preprocess(note)
         duration = neural_net.predict(sample.reshape(1, -1))
-        print(durations[duration[0]])
+        plt.title(duration[0])
     plt.show()
+
+    # Get note durations
+    durations = []
+    for note in im_notes:
+        sample = preprocess(note)
+        duration = neural_net.predict(sample.reshape(1, -1))
+        durations.append(duration_conv[duration[0]])
 
     # Create notes
     notes = []
@@ -106,8 +118,9 @@ def main():
             notes.append(note)
 
     # Print foxdot notes
-    pitches, durations = notes2foxdot(notes)
-    print("Pitches:", pitches)
+    pitches, _ = notes2foxdot(notes)
+    print("Pitches:  ", pitches)
+    print("Durations:", durations)
 
     # Remove first two pitches and last pitch
     pitches = pitches[2:len(pitches)-1]
@@ -119,6 +132,7 @@ def main():
     p1 = Player()
     p1 >> keys(pitches)
     Go()
+
 
 if __name__ == '__main__':
     main()
