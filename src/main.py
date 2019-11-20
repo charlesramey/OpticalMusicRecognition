@@ -83,7 +83,7 @@ def main():
     # Randomly select some images and see how they are classified
     shuffled = np.copy(im_notes)
     np.random.shuffle(shuffled)
-    plt.figure(figsize=(7,10),dpi=200)
+    plt.figure(figsize=(7, 10), dpi=200)
     n = 0
     for note in shuffled:
         n += 1
