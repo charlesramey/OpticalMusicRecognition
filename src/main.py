@@ -1,4 +1,4 @@
-from myfunctions import get_input_im, notes2foxdot, scale, preprocess
+from myfunctions import get_input_im, notes2foxdot, preprocess
 from StaffDetector import StaffDetector
 from find_notes import find_notes
 import matplotlib.pyplot as plt
@@ -15,7 +15,7 @@ def main():
     duration_conv = {'eighth': 0.5, 'quarter': 1, 'half': 2, 'whole': 4}
 
     # Load note duration recognizer
-    neural_net = joblib.load('duration_data.model')
+    neural_net = joblib.load('new_scale.model')
 
     # Load image
     filename = 'test5.png'
@@ -102,6 +102,24 @@ def main():
         plt.title(duration[0])
     plt.show()
 
+    plt.figure(figsize=(7, 10), dpi=200)
+    n = 0
+    for note in shuffled:
+        n += 1
+        if n > 25:
+            break
+        plt.subplot(5, 5, n)
+        sample = preprocess(note)
+        plt.imshow(sample.reshape((48,21)), cmap='gray')
+        plt.tick_params(
+            axis='x',  # changes apply to the x-axis
+            which='both',  # both major and minor ticks are affected
+            bottom=False,  # ticks along the bottom edge are off
+            top=False,  # ticks along the top edge are off
+            labelbottom=False)  # labels along the bottom edge are off
+        duration = neural_net.predict(sample.reshape(1, -1))
+        plt.title(duration[0])
+    plt.show()
     # Get note durations
     durations = []
     for note in im_notes:

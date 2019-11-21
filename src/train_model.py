@@ -2,9 +2,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.utils.multiclass import unique_labels
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import confusion_matrix
+from skimage.transform import resize
 from matplotlib import pyplot as plt
 from sklearn import svm, metrics
-from myfunctions import scale
+from skimage.io import imread
 from PIL import Image
 import numpy as np
 import joblib
@@ -22,7 +23,7 @@ def preprocess(training_dir, testing_dir):
             if 'png' in example:
                 example_path = training_dir + '\\' + fig + '\\' + example
                 im = Image.open(example_path).convert('LA')
-                resized = scale(im, (32,32)).convert('LA')
+                resized = scale(im, (48,21)).convert('LA')
                 resized = np.array(resized)[:,:,0].reshape((32*32, )) / 255
                 x_.append(resized)
                 y_.append(fig)
@@ -31,7 +32,7 @@ def preprocess(training_dir, testing_dir):
             if 'png' in example:
                 example_path = testing_dir + '\\' + fig + '\\' + example
                 im = Image.open(example_path).convert('LA')
-                resized = scale(im, (32,32)).convert('LA')
+                resized = scale(im, (48,21)).convert('LA')
                 resized = np.array(resized)[:,:,0].reshape((32*32, )) / 255
                 x_test.append(resized)
                 y_test.append(fig)
@@ -44,18 +45,20 @@ def preprocess_durations(data_dir):
         for example in os.listdir(data_dir + '\\' + fig):
             if 'png' in example:
                 example_path = data_dir + '\\' + fig + '\\' + example
-                im = Image.open(example_path).convert('LA')
-                resized = scale(im, (21,48)).convert('LA')
-                resized = np.array(resized)[:,:,0].reshape((21*48, )) / 255
+                im = imread(example_path, as_gray=True)
+                resized = resize(im, (48,21))
+                resized = np.array(resized).flatten() / 255
+                #plt.imshow(resized.reshape((48,21)))
+                #plt.show()
                 X.append(resized)
                 Y.append(fig)
     return (X, Y)
 
 def train_model(x_, y_, plot=False):
-    mlp = MLPClassifier(activation='relu', hidden_layer_sizes=(200),
-                    max_iter=500, alpha=1e-6,
+    mlp = MLPClassifier(activation='relu', hidden_layer_sizes=(100,),
+                    max_iter=500, alpha=1e-4,
                     solver='adam', verbose=20, 
-                    tol=1e-4, random_state=1,
+                    tol=1e-8, random_state=1,
                     learning_rate_init=.01,
                     learning_rate='adaptive')
     mlp.fit(x_, y_)
@@ -75,7 +78,7 @@ def test_model(x_test, y_test, mlp, compute_metrics=True):
 
 
 def main():
-    duration_data = "C:\\Users\\charles\\Desktop\\durations_data"
+    duration_data = "C:\\Users\\charles\\Downloads\\durations_data"
     print("NOW PREPROCESSING DATA")
     X, Y = preprocess_durations(duration_data)
     train_samples, test_samples, train_labels, test_labels = train_test_split(X, Y, test_size=0.33, random_state=42)
