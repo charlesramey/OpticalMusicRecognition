@@ -39,8 +39,14 @@ def main():
 
         # Note Extractor takes in an image of a staff, the staff height, and a list of note centroids. It returns
         # a list of images where each image is centered on the centroids specified.
-        ne = NoteExtractor.NoteExtractor(staff=sd.im_staves_separated[n], centroids=dummy, staff_height=sd.staff_height)
+        ne = NoteExtractor.NoteExtractor(staff=sd.im_staves_separated[n], centroids=dummy, staff_height=sd.staff_height-22)
+        count = 0
         for note in ne.notes:
+            count += 1
+            if count < 0:
+                plt.figure()
+                plt.imshow(note)
+                plt.show()
             im_notes.append(note)
 
         # Uncomment these to view plots
@@ -80,10 +86,37 @@ def main():
         if np.shape(note) != shape:
             print("Different note image shape detected")
 
+    # Select specific images and see how they are classified
+    plt.figure()
+    plt.subplot(2, 2, 1)
+    plt.imshow(im_notes[4])
+    sample = preprocess(note)
+    duration = neural_net.predict(sample.reshape(1, -1))
+    plt.title(duration[0])
+
+    plt.subplot(2, 2, 2)
+    plt.imshow(im_notes[40])
+    sample = preprocess(note)
+    duration = neural_net.predict(sample.reshape(1, -1))
+    plt.title(duration[0])
+
+    plt.subplot(2, 2, 3)
+    plt.imshow(im_notes[55])
+    sample = preprocess(note)
+    duration = neural_net.predict(sample.reshape(1, -1))
+    plt.title(duration[0])
+
+    plt.subplot(2, 2, 4)
+    plt.imshow(im_notes[84])
+    sample = preprocess(note)
+    duration = neural_net.predict(sample.reshape(1, -1))
+    plt.title(duration[0])
+    plt.show()
+
     # Randomly select some images and see how they are classified
     shuffled = np.copy(im_notes)
     np.random.shuffle(shuffled)
-    plt.figure(figsize=(7, 10), dpi=200)
+    plt.figure(figsize=(7, 10), dpi=100)
     n = 0
     for note in shuffled:
         n += 1
@@ -102,7 +135,7 @@ def main():
         plt.title(duration[0])
     plt.show()
 
-    plt.figure(figsize=(7, 10), dpi=200)
+    plt.figure(figsize=(7, 10), dpi=100)
     n = 0
     for note in shuffled:
         n += 1
@@ -110,7 +143,7 @@ def main():
             break
         plt.subplot(5, 5, n)
         sample = preprocess(note)
-        plt.imshow(sample.reshape((48,21)), cmap='gray')
+        plt.imshow(sample.reshape((48, 21)), cmap='gray')
         plt.tick_params(
             axis='x',  # changes apply to the x-axis
             which='both',  # both major and minor ticks are affected
