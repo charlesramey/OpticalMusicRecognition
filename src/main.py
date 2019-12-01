@@ -61,13 +61,13 @@ def main():
         #     plt.imshow(note, cmap='gray')
 
         # Plots centroids on the actual image
-        plt.figure(1, dpi=200)
-        plt.subplot(len(staves), 1, n+1)
-        if n == 0:
-            plt.title("Detected Centroids on Notes")
-        plt.imshow(sd.im_staves_separated[n], cmap='gray')
-        plt.axis('off')
-        plt.scatter([r[1] for r in dummy], [c[0] for c in dummy], marker='.', color='r', s=[1 for n in dummy])
+        # plt.figure(1, dpi=200)
+        # plt.subplot(len(staves), 1, n+1)
+        # if n == 0:
+        #     plt.title("Detected Centroids on Notes")
+        # plt.imshow(sd.im_staves_separated[n], cmap='gray')
+        # plt.axis('off')
+        # plt.scatter([r[1] for r in dummy], [c[0] for c in dummy], marker='.', color='r', s=[1 for n in dummy])
 
         # Plots centroids on the expanded staves
         # plt.figure(2, dpi=200)
@@ -78,7 +78,7 @@ def main():
         # plt.axis('off')
         # plt.scatter([r[1] for r in dummy], [c[0] for c in dummy], marker='.', color='r', s=[1 for n in dummy])
     print()
-    plt.show()
+    #plt.show()
 
     # Check if all notes are the same shape
     shape = np.shape(im_notes[0])
@@ -86,29 +86,29 @@ def main():
         if np.shape(note) != shape:
             print("Different note image shape detected")
 
-    # Select specific images and see how they are classified
+    #Select specific images and see how they are classified
     plt.figure()
     plt.subplot(2, 2, 1)
     plt.imshow(im_notes[4])
-    sample = preprocess(note)
+    sample = preprocess(im_notes[4])
     duration = neural_net.predict(sample.reshape(1, -1))
     plt.title(duration[0])
 
     plt.subplot(2, 2, 2)
     plt.imshow(im_notes[40])
-    sample = preprocess(note)
+    sample = preprocess(im_notes[40])
     duration = neural_net.predict(sample.reshape(1, -1))
     plt.title(duration[0])
 
     plt.subplot(2, 2, 3)
     plt.imshow(im_notes[55])
-    sample = preprocess(note)
+    sample = preprocess(im_notes[55])
     duration = neural_net.predict(sample.reshape(1, -1))
     plt.title(duration[0])
 
     plt.subplot(2, 2, 4)
     plt.imshow(im_notes[84])
-    sample = preprocess(note)
+    sample = preprocess(im_notes[55])
     duration = neural_net.predict(sample.reshape(1, -1))
     plt.title(duration[0])
     plt.show()
@@ -131,10 +131,14 @@ def main():
             top=False,  # ticks along the top edge are off
             labelbottom=False)  # labels along the bottom edge are off
         sample = preprocess(note)
+        classes = neural_net.classes_.tolist()
+        probs = neural_net.predict_proba(sample.reshape(1, -1))
         duration = neural_net.predict(sample.reshape(1, -1))
-        plt.title(duration[0])
+        if probs[0][classes.index(duration[0])] > 0.5:
+            plt.title(duration[0])
+        else:
+            plt.title('NULL')
     plt.show()
-
     plt.figure(figsize=(7, 10), dpi=100)
     n = 0
     for note in shuffled:
@@ -155,8 +159,15 @@ def main():
     plt.show()
     # Get note durations
     durations = []
+    last_note = None
+    count = 0
     for note in im_notes:
+        #if count > 0:
+            #print("Last note same as current note? {}".format(last_note.all() == note.all()))
+        last_note = note
+        count += 1
         sample = preprocess(note)
+        print(neural_net.predict_proba(sample.reshape(1, -1)))
         duration = neural_net.predict(sample.reshape(1, -1))
         durations.append(duration_conv[duration[0]])
 
