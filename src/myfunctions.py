@@ -58,7 +58,8 @@ def notes2foxdot(notes):
 
 
 def preprocess(img):
+    img = img.astype('float64')
     resized = rgb2gray(img)
-    resized = resize(img, (48,21))
-    resized = resized.flatten() / 255
+    resized = resize(resized, (48,21), preserve_range=True)
+    resized = resized.flatten() / 225
     return resized

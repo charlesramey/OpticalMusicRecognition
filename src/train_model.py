@@ -4,6 +4,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import confusion_matrix
 from skimage.transform import resize
 from matplotlib import pyplot as plt
+from skimage.color import rgb2gray
 from sklearn import svm, metrics
 from skimage.io import imread
 from PIL import Image
@@ -45,9 +46,12 @@ def preprocess_durations(data_dir):
         for example in os.listdir(data_dir + '\\' + fig):
             if 'png' in example:
                 example_path = data_dir + '\\' + fig + '\\' + example
-                im = imread(example_path, as_gray=True)
-                resized = resize(im, (48,21))
-                resized = np.array(resized).flatten() / 255
+                im = imread(example_path)
+                img = im.astype('float64')
+                resized = rgb2gray(img)
+                resized = resized / np.max(resized)
+                resized = resize(resized, (48,21), preserve_range=True)
+                resized = resized.flatten() / 225
                 #plt.imshow(resized.reshape((48,21)))
                 #plt.show()
                 X.append(resized)
@@ -55,11 +59,11 @@ def preprocess_durations(data_dir):
     return (X, Y)
 
 def train_model(x_, y_, plot=False):
-    mlp = MLPClassifier(activation='relu', hidden_layer_sizes=(100,),
-                    max_iter=500, alpha=1e-4,
+    mlp = MLPClassifier(activation='relu', hidden_layer_sizes=(200,),
+                    max_iter=20000, alpha=1e-4,
                     solver='adam', verbose=20, 
                     tol=1e-8, random_state=1,
-                    learning_rate_init=.01,
+                    learning_rate_init=.0001,
                     learning_rate='adaptive')
     mlp.fit(x_, y_)
     if plot:
@@ -78,7 +82,7 @@ def test_model(x_test, y_test, mlp, compute_metrics=True):
 
 
 def main():
-    duration_data = "C:\\Users\\charles\\Downloads\\durations_data"
+    duration_data = "C:\\Users\\charles\\Downloads\\thresholded_data"
     print("NOW PREPROCESSING DATA")
     X, Y = preprocess_durations(duration_data)
     train_samples, test_samples, train_labels, test_labels = train_test_split(X, Y, test_size=0.33, random_state=42)

@@ -15,10 +15,12 @@ def main():
     duration_conv = {'eighth': 0.5, 'quarter': 1, 'half': 2, 'whole': 4}
 
     # Load note duration recognizer
-    neural_net = joblib.load('new_scale.model')
-
+    #neural_net = joblib.load('new_scale.model')
+    neural_net = joblib.load('12_2_net.model')
+    #neural_net = joblib.load('not_converged.model')
+    #neural_net = joblib.load('10k_training_epochs.model')
     # Load image
-    filename = 'test5.png'
+    filename = 'test4.png'
     input_im = get_input_im(filename)
 
     # Separate Staves
@@ -87,31 +89,31 @@ def main():
             print("Different note image shape detected")
 
     #Select specific images and see how they are classified
-    plt.figure()
-    plt.subplot(2, 2, 1)
-    plt.imshow(im_notes[4])
-    sample = preprocess(im_notes[4])
-    duration = neural_net.predict(sample.reshape(1, -1))
-    plt.title(duration[0])
+    # plt.figure()
+    # plt.subplot(2, 2, 1)
+    # plt.imshow(im_notes[4])
+    # sample = preprocess(im_notes[4])
+    # duration = neural_net.predict(sample.reshape(1, -1))
+    # plt.title(duration[0])
 
-    plt.subplot(2, 2, 2)
-    plt.imshow(im_notes[40])
-    sample = preprocess(im_notes[40])
-    duration = neural_net.predict(sample.reshape(1, -1))
-    plt.title(duration[0])
+    # plt.subplot(2, 2, 2)
+    # plt.imshow(im_notes[40])
+    # sample = preprocess(im_notes[40])
+    # duration = neural_net.predict(sample.reshape(1, -1))
+    # plt.title(duration[0])
 
-    plt.subplot(2, 2, 3)
-    plt.imshow(im_notes[55])
-    sample = preprocess(im_notes[55])
-    duration = neural_net.predict(sample.reshape(1, -1))
-    plt.title(duration[0])
+    # plt.subplot(2, 2, 3)
+    # plt.imshow(im_notes[55])
+    # sample = preprocess(im_notes[55])
+    # duration = neural_net.predict(sample.reshape(1, -1))
+    # plt.title(duration[0])
 
-    plt.subplot(2, 2, 4)
-    plt.imshow(im_notes[84])
-    sample = preprocess(im_notes[55])
-    duration = neural_net.predict(sample.reshape(1, -1))
-    plt.title(duration[0])
-    plt.show()
+    # plt.subplot(2, 2, 4)
+    # plt.imshow(im_notes[84])
+    # sample = preprocess(im_notes[55])
+    # duration = neural_net.predict(sample.reshape(1, -1))
+    # plt.title(duration[0])
+    # plt.show()
 
     # Randomly select some images and see how they are classified
     shuffled = np.copy(im_notes)
