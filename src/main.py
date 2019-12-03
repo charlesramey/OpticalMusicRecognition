@@ -16,11 +16,11 @@ def main():
 
     # Load note duration recognizer
     #neural_net = joblib.load('new_scale.model')
-    neural_net = joblib.load('12_2_net.model')
+    neural_net = joblib.load('12_3_net.model')
     #neural_net = joblib.load('not_converged.model')
     #neural_net = joblib.load('10k_training_epochs.model')
     # Load image
-    filename = 'test4.png'
+    filename = 'test5.png'
     input_im = get_input_im(filename)
 
     # Separate Staves

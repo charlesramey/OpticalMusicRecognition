@@ -7,10 +7,12 @@ from matplotlib import pyplot as plt
 from skimage.color import rgb2gray
 from sklearn import svm, metrics
 from skimage.io import imread
-from PIL import Image
 import numpy as np
 import joblib
 import os
+import imageio
+from sklearn.model_selection import learning_curve
+from sklearn.model_selection import ShuffleSplit
 
 
 
@@ -46,21 +48,57 @@ def preprocess_durations(data_dir):
         for example in os.listdir(data_dir + '\\' + fig):
             if 'png' in example:
                 example_path = data_dir + '\\' + fig + '\\' + example
-                im = imread(example_path)
-                img = im.astype('float64')
-                resized = rgb2gray(img)
-                resized = resized / np.max(resized)
-                resized = resize(resized, (48,21), preserve_range=True)
-                resized = resized.flatten() / 225
-                #plt.imshow(resized.reshape((48,21)))
-                #plt.show()
-                X.append(resized)
-                Y.append(fig)
+                try:
+                    print(example_path)
+                    im = imageio.imread(example_path)
+                    img = im.astype('float64')
+                    resized = rgb2gray(img)
+                    resized = resized / np.max(resized)
+                    resized = resize(resized, (48,21), preserve_range=True)
+                    resized = resized.flatten() / 225
+                    #plt.imshow(resized.reshape((48,21)))
+                    #plt.show()
+                    X.append(resized)
+                    Y.append(fig)
+                except Exception as e:
+                    print("Failed: {}".format(example_path))
     return (X, Y)
+
+def lc_curve(X, y):
+    title = "Learning Curves"
+    fig, axes = plt.subplots(1, 1, figsize=(5, 5))
+    cv = ShuffleSplit(n_splits=20, test_size=0.2, random_state=0)
+    estimator = MLPClassifier(activation='relu', hidden_layer_sizes=(200,),
+                    max_iter=10000, alpha=1e-4,
+                    solver='adam', verbose=20, 
+                    tol=1e-8, random_state=1,
+                    learning_rate_init=.0001,
+                    learning_rate='adaptive')
+
+    train_sizes, train_scores, test_scores, fit_times, _ = \
+        learning_curve(estimator, X, y, cv=cv, n_jobs=4,
+                       train_sizes=np.linspace(.1, 1.0, 5))
+    train_scores_mean = np.mean(train_scores, axis=1)
+    train_scores_std = np.std(train_scores, axis=1)
+    test_scores_mean = np.mean(test_scores, axis=1)
+    test_scores_std = np.std(test_scores, axis=1)
+    plt.grid()
+    plt.fill_between(train_sizes, train_scores_mean - train_scores_std,
+                         train_scores_mean + train_scores_std, alpha=0.1,
+                         color="r")
+    plt.fill_between(train_sizes, test_scores_mean - test_scores_std,
+                         test_scores_mean + test_scores_std, alpha=0.1,
+                         color="g")
+    plt.plot(train_sizes, train_scores_mean, 'o-', color="r",
+                 label="Training score")
+    plt.plot(train_sizes, test_scores_mean, 'o-', color="g",
+                 label="Cross-validation score")
+    plt.legend(loc="best")
+    plt.show()
 
 def train_model(x_, y_, plot=False):
     mlp = MLPClassifier(activation='relu', hidden_layer_sizes=(200,),
-                    max_iter=20000, alpha=1e-4,
+                    max_iter=10000, alpha=1e-4,
                     solver='adam', verbose=20, 
                     tol=1e-8, random_state=1,
                     learning_rate_init=.0001,
@@ -82,17 +120,19 @@ def test_model(x_test, y_test, mlp, compute_metrics=True):
 
 
 def main():
-    duration_data = "C:\\Users\\charles\\Downloads\\thresholded_data"
+    duration_data = "C:\\Users\\charles\\Downloads\\thresholded_dataset"
     print("NOW PREPROCESSING DATA")
     X, Y = preprocess_durations(duration_data)
-    train_samples, test_samples, train_labels, test_labels = train_test_split(X, Y, test_size=0.33, random_state=42)
-    #train_samples, train_labels, test_samples, test_labels = preprocess(training_dir, testing_dir)
-    print("NOW TRAINING NEURAL NETWORK")
-    neuralnetwork = train_model(train_samples, train_labels, plot=True)
-    nn_filename = input("Enter filename to save the neural network: ")
-    joblib.dump(neuralnetwork, nn_filename)
-    print("NOW TESTING NEURAL NETWORK")
-    test_model(test_samples, test_labels, neuralnetwork)
+    # train_samples, test_samples, train_labels, test_labels = train_test_split(X, Y, test_size=0.33, random_state=42)
+    # #train_samples, train_labels, test_samples, test_labels = preprocess(training_dir, testing_dir)
+    # print("NOW TRAINING NEURAL NETWORK")
+    # neuralnetwork = train_model(train_samples, train_labels, plot=True)
+    # nn_filename = input("Enter filename to save the neural network: ")
+    # joblib.dump(neuralnetwork, nn_filename)
+    # print("NOW TESTING NEURAL NETWORK")
+    # test_model(test_samples, test_labels, neuralnetwork)
+    print("NOW COMPUTING LEARNING CURVES")
+    lc_curve(X, Y)
     return
 
 
