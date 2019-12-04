@@ -67,17 +67,17 @@ def preprocess_durations(data_dir):
 def lc_curve(X, y):
     title = "Learning Curves"
     fig, axes = plt.subplots(1, 1, figsize=(5, 5))
-    cv = ShuffleSplit(n_splits=20, test_size=0.2, random_state=0)
-    estimator = MLPClassifier(activation='relu', hidden_layer_sizes=(200,),
-                    max_iter=10000, alpha=1e-4,
+    cv = ShuffleSplit(n_splits=10, test_size=0.2, random_state=0)
+    estimator = MLPClassifier(activation='relu', hidden_layer_sizes=(200,200),
+                    max_iter=600, alpha=1e-4,
                     solver='adam', verbose=20, 
                     tol=1e-8, random_state=1,
-                    learning_rate_init=.0001,
+                    learning_rate_init=.01,
                     learning_rate='adaptive')
 
-    train_sizes, train_scores, test_scores, fit_times, _ = \
+    train_sizes, train_scores, test_scores = \
         learning_curve(estimator, X, y, cv=cv, n_jobs=4,
-                       train_sizes=np.linspace(.1, 1.0, 5))
+                       train_sizes=np.linspace(.1, 1.0, 7))
     train_scores_mean = np.mean(train_scores, axis=1)
     train_scores_std = np.std(train_scores, axis=1)
     test_scores_mean = np.mean(test_scores, axis=1)
@@ -94,6 +94,8 @@ def lc_curve(X, y):
     plt.plot(train_sizes, test_scores_mean, 'o-', color="g",
                  label="Cross-validation score")
     plt.legend(loc="best")
+    plt.xlabel("Training examples")
+    plt.ylabel("Accuracy")
     plt.show()
 
 def train_model(x_, y_, plot=False):
@@ -123,16 +125,16 @@ def main():
     duration_data = "C:\\Users\\charles\\Downloads\\thresholded_dataset"
     print("NOW PREPROCESSING DATA")
     X, Y = preprocess_durations(duration_data)
-    # train_samples, test_samples, train_labels, test_labels = train_test_split(X, Y, test_size=0.33, random_state=42)
-    # #train_samples, train_labels, test_samples, test_labels = preprocess(training_dir, testing_dir)
-    # print("NOW TRAINING NEURAL NETWORK")
-    # neuralnetwork = train_model(train_samples, train_labels, plot=True)
-    # nn_filename = input("Enter filename to save the neural network: ")
-    # joblib.dump(neuralnetwork, nn_filename)
-    # print("NOW TESTING NEURAL NETWORK")
-    # test_model(test_samples, test_labels, neuralnetwork)
-    print("NOW COMPUTING LEARNING CURVES")
-    lc_curve(X, Y)
+    train_samples, test_samples, train_labels, test_labels = train_test_split(X, Y, test_size=0.10, random_state=42)
+    #train_samples, train_labels, test_samples, test_labels = preprocess(training_dir, testing_dir)
+    print("NOW TRAINING NEURAL NETWORK")
+    neuralnetwork = train_model(train_samples, train_labels, plot=True)
+    nn_filename = input("Enter filename to save the neural network: ")
+    joblib.dump(neuralnetwork, nn_filename)
+    print("NOW TESTING NEURAL NETWORK")
+    test_model(test_samples, test_labels, neuralnetwork)
+    #print("NOW COMPUTING LEARNING CURVES")
+    #lc_curve(X, Y)
     return
 
 

@@ -142,6 +142,7 @@ def main():
             plt.title('NULL')
     plt.show()
     plt.figure(figsize=(7, 10), dpi=100)
+    plt.title("Predicted Class | Random Class")
     n = 0
     for note in shuffled:
         n += 1
@@ -156,8 +157,12 @@ def main():
             bottom=False,  # ticks along the bottom edge are off
             top=False,  # ticks along the top edge are off
             labelbottom=False)  # labels along the bottom edge are off
+        probs = neural_net.predict_proba(sample.reshape(1, -1))
+        prob_class = neural_net.classes_[np.argmax(probs)]
+        print("Most probable class: {} Probability: {}".format(prob_class, np.max(probs)))
         duration = neural_net.predict(sample.reshape(1, -1))
-        plt.title(duration[0])
+        random = neural_net.classes_[np.random.choice(4)]
+        plt.title("{} | {}".format(duration[0],random))
     plt.show()
     # Get note durations
     durations = []
